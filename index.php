@@ -199,8 +199,7 @@ class moonCal {
 		
 	</p>
 	
-	<p>I link to a <a href='https://github.com/kwynncom/code-fragments/tree/b2f4d6ef6aa97ac95a6a3f63c2f58af42c425388/moon'>
-			specific version of the source code</a> because I will probably move the code.
+	<p><a href='https://github.com/kwynncom/astronomy'>source code</a> (brand new repo)
 		
 	</p>
 	
