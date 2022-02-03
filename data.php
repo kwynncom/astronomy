@@ -25,8 +25,15 @@ class moon_data extends dao_generic_3 implements moon_config {
 		return;
 	}
 
+	private static function emp($in) {
+		file_put_contents('/tmp/em1.txt', json_encode($in), FILE_APPEND);
+	}
+	
 	public function getI() {
-		$res = $this->mcoll->find($this->getMaxQ());
+		$q = $this->getMaxQ();
+		self::emp($q);
+		$res = $this->mcoll->find($q, ['sort' => ['U' => 1]]);
+		self::emp($res);
 		return $res;
 	}
 	
@@ -53,7 +60,7 @@ class moon_data extends dao_generic_3 implements moon_config {
 	
 	private function getAlmanacIf() {
 		if ($this->already()) return;
-		return $this->processAlmanac(trim(shell_exec('python3 ' . __DIR__ . '/moon.py' . ' ' . $this->minDays . ' ' . ($this->maxDays + self::safePhD))));
+		return $this->processAlmanac(trim(shell_exec('python3 ' . __DIR__ . '/moon.py' . ' ' . ($this->minDays + self::safePhD). ' ' . ($this->maxDays + self::safePhD))));
 	}
 	
 	private function processAlmanac($t) {
