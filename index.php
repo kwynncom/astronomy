@@ -1,5 +1,10 @@
-<!DOCTYPE html>  <?php require_once('moon.php'); ?>
+<!DOCTYPE html>
 <html lang='en'>
+<?php 
+require_once('get.php'); 
+require_once('calc.php'); 
+?>
+	
 <head>
 <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'    />
 <meta name='viewport' content='width=device-width, initial-scale=1.0' />

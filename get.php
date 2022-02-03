@@ -1,15 +1,11 @@
 <?php
 
 require_once('/opt/kwynn/kwutils.php');
+require_once('config.php');
 
-class moon extends dao_generic_3 { 
+class moon extends dao_generic_3 implements moon_config { 
 	
 	const dbname = 'moon';
-	const safePhD  = 9;
-	const calcDays = 45;
-	const maxDaysNeeded = self::safePhD + self::calcDays;
-	const extraDays = 50;
-	const newAlmanacIfDays = self::maxDaysNeeded + self::extraDays;
 	
 	public static function get() {
 		$o = new self();
