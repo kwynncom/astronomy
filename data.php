@@ -31,14 +31,18 @@ class moon_data extends dao_generic_3 implements moon_config {
 	
 	function already() {
 		$now = time();
-		if (!$this->mcoll->findOne(['U' => ['$lte' => $now - DAY_S * self::safePhD]]))		 return false;
+		$q10 = ['U' => ['$gte' => $now - DAY_S * self::safePhD]];
+		$q20 = ['U' => ['$lte' => $now]];
+		$q30 = ['$and' => [$q10, $q20]];
+		
+		if (!$this->mcoll->count($q30)) return false;
 		if (!$this->mcoll->findOne(['U' => ['$gte' => $now + DAY_S * self::newAlmanacIfDays]])) return false;
 		return true;
 	}
 	
 	function do10() {
 		if ($this->already()) return;
-		return $this->do20(trim(shell_exec('/usr/bin/python3 ' . __DIR__ . '/moon.py')));
+		return $this->do20(trim(shell_exec('python3 ' . __DIR__ . '/moon.py' . ' ' . self::safePhD . ' ' . (self::newAlmanacIfDays + self::safePhD))));
 	}
 	
 	function do20($t) {
@@ -69,4 +73,4 @@ class moon_data extends dao_generic_3 implements moon_config {
 	}
 }
 
-if (didCLICallMe(__FILE__)) new moon_data();
+if (didCLICallMe(__FILE__)) moon_data::get();

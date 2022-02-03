@@ -77,9 +77,7 @@ class moon_calc implements moon_config {
 				$ar['ms' ] = $ar['U'] * 1000;
 			}
 		}
-	
+
 		return $ar;
 	}
-	
-	
 }
