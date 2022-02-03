@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang='en'>
 <?php 
-require_once('get.php'); 
 require_once('calc.php'); 
 ?>
 	
@@ -86,7 +85,7 @@ class lunation {
 }
 
 window.addEventListener('DOMContentLoaded', () => {   		
-	const monabig = <?php echo(moon::get()); ?>;
+	const monabig = <?php echo(moon_calc::get()); ?>;
 	new moonCal (monabig.cala);
 	new lunation(monabig.phcha);
 }); 
