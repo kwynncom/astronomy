@@ -53,7 +53,7 @@ class moon_data extends dao_generic_3 implements moon_config {
 	
 	private function getAlmanacIf() {
 		if ($this->already()) return;
-		return $this->processAlmanac(trim(shell_exec('python3 ' . __DIR__ . '/moon.py' . ' ' . $this->minDays . ' ' . ($this->maxDays + 2))));
+		return $this->processAlmanac(trim(shell_exec('python3 ' . __DIR__ . '/moon.py' . ' ' . $this->minDays . ' ' . ($this->maxDays + self::safePhD))));
 	}
 	
 	private function processAlmanac($t) {
