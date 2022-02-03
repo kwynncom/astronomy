@@ -33,12 +33,15 @@ table {   border-collapse: separate; }
 
 <script>
 
-window.addEventListener('DOMContentLoaded', () => {   		
-	const monabig = <?php echo(moon_calc::get()); ?>;
+
+function onGotData(monabigJ) {   		
+	const monabig = JSON.parse(monabigJ);
 	new moonCal (monabig.cala);
 	new lunation(monabig.phcha);
 	kwjss.sobf('getData.php');
-}); 
+} 
+
+kwjss.sobf('calc.php', {'tzName' : tzName() }, onGotData);
 
 class lunation {
     
@@ -191,13 +194,10 @@ class moonCal {
 			of the sky (every hour RA of sky is 15&deg; of sky).  A full moon is 12 hours or 180&deg; apart between sun and moon.  (I display the absolute value 
 			of the number.)  The RA offset is calculated as the following number times 24.
 		</p>
-	<p>The constantly running number is the fraction of the moon's lunation (lunar month) where 0 is new and 0.5 is full and 0.99 is almost new again.  This new 
-		moon fraction number and the RA offset are global / timezone independent.  As for the dates and times:
+	<p>The constantly running number is the fraction of the moon's lunation (lunar month) where 0 is new and 0.5 is full and 0.99 is almost new again.  
+		The timezone is local to you / your browser.
 	</p>
-	<p><?php echo('UTC ' . date('P, T, e') . '.'); ?>
-		New York is simply the reference city for the timezone.  I am far from New York, deep in the Confederacy.  
-		
-	</p>
+
 	
 	<p><a href='https://github.com/kwynncom/astronomy'>source code</a> (brand new repo)
 		

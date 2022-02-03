@@ -14,7 +14,7 @@ class moon_data extends dao_generic_3 implements moon_config {
 	
 	private function __construct($edin = 0) {
 		$this->minDays = self::safePhD;
-		$this->maxDays = self::safePhD + self::calcDays + $edin; unset($edin);
+		$this->maxDays = self::calcDays + $edin; unset($edin);
 		parent::__construct(self::dbname);
 		$this->creTabs(['m' => 'moon']);
 		$this->mcoll->createIndex(['U' =>  1], ['unique' => true]);
@@ -60,7 +60,7 @@ class moon_data extends dao_generic_3 implements moon_config {
 	
 	private function getAlmanacIf() {
 		if ($this->already()) return;
-		return $this->processAlmanac(trim(shell_exec('python3 ' . __DIR__ . '/moon.py' . ' ' . ($this->minDays + self::safePhD). ' ' . ($this->maxDays + self::safePhD))));
+		return $this->processAlmanac(trim(shell_exec('python3 ' . __DIR__ . '/moon.py' . ' ' . ($this->minDays) . ' ' . ($this->maxDays))));
 	}
 	
 	private function processAlmanac($t) {

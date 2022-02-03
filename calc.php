@@ -18,19 +18,31 @@ class moon_calc implements moon_config {
 		return $o->getI();
 	}
 	
+	public static function exGet() {
+		$ig = self::get();
+		kwjae($ig);
+	}
+	
 	public function getI() {
 		$ra = ['cala' => $this->cala, 'phcha' => $this->phcha];
 		$j  = json_encode($ra);
 		return $j;
 	}
 
+	public static function setTZ() {
+		$n = kwjssrp('tzName');
+		return setVTZ($n);
+	}
+	
 	function do40($ala) {
 
 		static $minMax =  self::safePhD * DAY_S;
 		
+		$tzo = self::setTZ();
+				
 		$d10 = new DateTime();
 		$d10->setTimestamp($ala[0]['U']);
-		$d20 = new DateTime($d10->format('Y-m-d 23:59:59.999999')); unset($d10);
+		$d20 = new DateTime($d10->format('Y-m-d 23:59:59.999999'), $tzo); unset($d10, $tzo);
 		$now = time();
 		
 		
@@ -81,3 +93,5 @@ class moon_calc implements moon_config {
 		return $ar;
 	}
 }
+
+if (didAnyCallMe(__FILE__)) moon_calc::exGet();
