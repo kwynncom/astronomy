@@ -33,6 +33,13 @@ table {   border-collapse: separate; }
 
 <script>
 
+window.addEventListener('DOMContentLoaded', () => {   		
+	const monabig = <?php echo(moon_calc::get()); ?>;
+	new moonCal (monabig.cala);
+	new lunation(monabig.phcha);
+	kwjss.sobf('getData.php');
+}); 
+
 class lunation {
     
     config() {
@@ -57,10 +64,9 @@ class lunation {
 		const t = time();
 		
 		while (		(!(      t >= a[bi]['ms']
-					&& t <  a[ai]['ms']
-					))
-				&&  ai < 30 // 17:25 - prevent possible infinite loop
-				) {bi++; ai++; }
+						  && t <  a[ai]['ms'] ))
+				&&					ai < 30 // prevent possible infinite loop
+				) {bi++;			ai++; }
 			
 		const span = a[ai]['ms'] - a[bi]['ms'];
 		const prog = t -		   a[bi]['ms'];
@@ -83,12 +89,6 @@ class lunation {
         setInterval(() => { self.onInt(); }, this.dinterval);       
     }
 }
-
-window.addEventListener('DOMContentLoaded', () => {   		
-	const monabig = <?php echo(moon_calc::get()); ?>;
-	new moonCal (monabig.cala);
-	new lunation(monabig.phcha);
-}); 
 
 class moonCal {
     constructor(cala) {

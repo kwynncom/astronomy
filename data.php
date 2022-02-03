@@ -7,45 +7,56 @@ class moon_data extends dao_generic_3 implements moon_config {
 	
 	const dbname = 'moon';
 
-	public static function get() {
-		$o = new self();
+	public static function get($edin = 0) {
+		$o = new self($edin);
 		return $o->getI();
 	}
 	
-	private function __construct() {
+	private function __construct($edin = 0) {
+		$this->minDays = self::safePhD;
+		$this->maxDays = self::safePhD + self::calcDays + $edin; unset($edin);
 		parent::__construct(self::dbname);
 		$this->creTabs(['m' => 'moon']);
-		$this->mcoll->createIndex(['U' => 1], ['unique' => true]);
+		$this->mcoll->createIndex(['U' =>  1], ['unique' => true]);
+		$this->mcoll->createIndex(['U' => -1], ['unique' => true]);
 		$this->phca = [];
-		$this->do10();
+		$this->now = time();
+		$this->getAlmanacIf();
 		return;
 	}
 
 	public function getI() {
-		$now = time();
-		$min = $now - DAY_S *  self::safePhD;
-		$max = $now + DAY_S * (self::safePhD + self::calcDays);
-		$res = $this->mcoll->find(['$and' => [['U' => ['$gte' => $min]], ['U' => ['$lt' => $max]]]]);
+		$res = $this->mcoll->find($this->getMaxQ());
 		return $res;
 	}
 	
-	function already() {
-		$now = time();
-		$q10 = ['U' => ['$gte' => $now - DAY_S * self::safePhD]];
-		$q20 = ['U' => ['$lte' => $now]];
+	private function getMinQ() { 
+		$q10 = ['U' => ['$gte' => $this->now - DAY_S * $this->minDays]];
+		$q20 = ['U' => ['$lte' => $this->now]];
 		$q30 = ['$and' => [$q10, $q20]];
+		return $q30;
+	}
+	
+	private function getMaxQ($ckAlready = false) {
+		$p10 = $this->now + DAY_S * $this->maxDays;
 		
-		if (!$this->mcoll->count($q30)) return false;
-		if (!$this->mcoll->findOne(['U' => ['$gte' => $now + DAY_S * self::newAlmanacIfDays]])) return false;
+		if ($ckAlready) $op = '$gte';
+		else			$op = '$lte';
+		return ['U' => [$op => $p10]];
+	}
+	
+	private function already() {
+		if (!$this->mcoll->findOne($this->getMinQ( ))) return false;
+		if (!$this->mcoll->findOne($this->getMaxQ(1))) return false;
 		return true;
 	}
 	
-	function do10() {
+	private function getAlmanacIf() {
 		if ($this->already()) return;
-		return $this->do20(trim(shell_exec('python3 ' . __DIR__ . '/moon.py' . ' ' . self::safePhD . ' ' . (self::newAlmanacIfDays + self::safePhD))));
+		return $this->processAlmanac(trim(shell_exec('python3 ' . __DIR__ . '/moon.py' . ' ' . $this->minDays . ' ' . ($this->maxDays + 2))));
 	}
 	
-	function do20($t) {
+	private function processAlmanac($t) {
 		$aa = explode("\n", $t); unset($t);
 		kwas(count($aa) === 3, 'moon bad count 0020');
 		$ms = [];
@@ -66,11 +77,6 @@ class moon_data extends dao_generic_3 implements moon_config {
 			$this->mcoll->upsert(['_id' => $_id], $dat, 1, false); unset($U, $dat, $n, $r, $t, $z, $_id);
 		} 	unset($i, $p, $a);
 	}
-	
-	public static function ppyarr($s) {
-		return str_replace("'", '"', $s) . ';';
-		
-	}
 }
 
-if (didCLICallMe(__FILE__)) moon_data::get();
+if (didCLICallMe(__FILE__)) moon_data::get(moon_config::extraDays);

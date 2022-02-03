@@ -7,5 +7,4 @@ interface moon_config  {
 	const calcDays = 45;
 	const maxDaysNeeded = self::safePhD + self::calcDays;
 	const extraDays = 50;
-	const newAlmanacIfDays = self::maxDaysNeeded + self::extraDays;
 }
