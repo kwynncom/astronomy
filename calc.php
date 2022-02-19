@@ -25,8 +25,7 @@ class moon_calc implements moon_config {
 	
 	public function getI() {
 		$ra = ['cala' => $this->cala, 'phcha' => $this->phcha];
-		$j  = json_encode($ra);
-		return $j;
+		return $ra;
 	}
 
 	public static function setTZ() {
@@ -45,12 +44,16 @@ class moon_calc implements moon_config {
 		$d20 = new DateTime($d10->format('Y-m-d 23:59:59.999999'), $tzo); unset($d10, $tzo);
 		$now = time();
 		
-		
-		for ($i=1; $i <= self::calcDays; $i++) {
+		$dd = 0;
+		for ($i=1; $i <= self::calcDays; $i++) { // the loop should term before calcDays; I use it as an upper limit
 			
 			$d20ts = $d20->getTimestamp();
 			
-			if ($d20ts > $ala[0]['U']) {
+			$ala0U = kwifs($ala, 0, 'U');
+			
+			if (!$ala0U) break; // this should not happen either, but it's not an exception condition
+			
+			if ($d20ts > $ala0U) {
 				$ta = array_shift($ala);
 				$ta['pd'] = 1;
 				$this->cl10($ta); 
@@ -64,7 +67,8 @@ class moon_calc implements moon_config {
 			}
 
 			$hud = $ta['hud'] = $d20->format(self::huddfs);
-			if ($d20ts >= $now) $r[] = $ta; unset($d20ts);
+			if ($d20ts >= $now) { $r[] = $ta; $dd++; } unset($d20ts);
+			if ($dd > self::displayDays) break; // should term here
 			$d20->add(new DateInterval('P1D'));
 			continue;
 		} unset($ta, $d20, $i, $ala, $now, $minMax, $d20ts);

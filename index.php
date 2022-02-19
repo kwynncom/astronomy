@@ -34,8 +34,8 @@ table {   border-collapse: separate; }
 <script>
 
 
-function onGotData(monabigJ) {   		
-	const monabig = JSON.parse(monabigJ);
+function onGotData(monabig) {   		
+	// const monabig = JSON.parse(monabigJ);
 	new moonCal (monabig.cala);
 	new lunation(monabig.phcha);
 	kwjss.sobf('getData.php');
