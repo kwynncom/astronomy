@@ -1,18 +1,10 @@
 <!DOCTYPE html>
-<html lang='en'>
-<?php 
-require_once('calc.php'); 
-?>
-	
+<html lang='en'><?php require_once('calc.php'); ?>
 <head>
 <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'    />
 <meta name='viewport' content='width=device-width, initial-scale=1.0' />
 
 <title>moon phase</title>
-
-<!-- 
-https://kwynn.com/t/22/01/moon/
--->
 
 <style>
 body { font-family: sans-serif; }
@@ -30,12 +22,9 @@ table {   border-collapse: separate; }
 </style>
 
 <script src='/opt/kwynn/js/utils.js'></script>
-
 <script>
 
-
 function onGotData(monabig) {   		
-	// const monabig = JSON.parse(monabigJ);
 	new moonCal (monabig.cala);
 	new lunation(monabig.phcha);
 	kwjss.sobf('getData.php');
@@ -56,6 +45,7 @@ class lunation {
 		this.thea = ain;
         this.config();
         this.onInt();
+		inht('tzrce', tzName());
         this.setInt();
     }
 	
@@ -83,7 +73,8 @@ class lunation {
         const p = this.calc();
         const pd = p.toFixed(this.decright);
         this.e10.innerHTML = pd;
-		const raf = p * 24;
+		let raf = p * 24;
+		if (raf > 12) raf = 24 - raf;
 		inht(this.e20, raf.toFixed(1));
     }
 
@@ -180,8 +171,10 @@ class moonCal {
     
     <div>
 		<p>
-			<span class='per20p'><span id='per20'></span> hrs RA offset</span>
+			<span class='per20p'><span id='per20'></span> RAo</span>
 			<span id='per10'></span>
+			<label>TZ</label>
+			<span id='tzrce'></span>
 	</p>
     <table>
         <tbody id='tbody10'>
@@ -189,19 +182,25 @@ class moonCal {
     </table>
 	</div>
 	<div>
-		
-		<p>The hours RA (right ascension) offset is that between the moon and sun as seen from earth, where 24 hours right ascension is the entire 360&deg; 
-			of the sky (every hour RA of sky is 15&deg; of sky).  A full moon is 12 hours or 180&deg; apart between sun and moon.  (I display the absolute value 
-			of the number.)  The RA offset is calculated as the following number times 24.
-		</p>
+
 	<p>The constantly running number is the fraction of the moon's lunation (lunar month) where 0 is new and 0.5 is full and 0.99 is almost new again.  
-		The timezone is local to you / your browser.
+		"TZ" shows the timezone reference city / region, which should be your timezone / your browser's timezone / your OS's timezone / your device's TZ.  
+		For example, America/New_York is the reference city for US Eastern Time (ET / EST / EDT).  See WikiP's 
+		<a href='https://en.wikipedia.org/wiki/List_of_tz_database_time_zones'>TZ list</a>.  
+	</p>
+		
+	<p>The hours RA (right ascension) offset is that between the moon and sun as seen from earth, where 24 hours right ascension is the entire 360&deg; 
+		of the sky (every hour RA of sky is 15&deg; of sky).  A full moon is 12 hours or 180&deg; apart between sun and moon.  I show the RA up to 12 for a 
+		waxing moon and then start from 12 down to 0 for a waning moon, rather than 24 hours.
+	</p>
+	
+	<p>Otherwise put, the RA offset is the lunation fraction above times 24.  In my case, I subtract from 24 if over 12.
+		
 	</p>
 
+
 	
-	<p><a href='https://github.com/kwynncom/astronomy'>source code</a> (brand new repo)
-		
-	</p>
+	<p><a href='https://github.com/kwynncom/astronomy'>source code</a>	</p>
 	
 	</div>
 	
