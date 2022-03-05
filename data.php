@@ -30,15 +30,19 @@ class moon_data extends dao_generic_3 implements moon_config {
 	}
 	
 	public function getI() {
-		$q = $this->getMaxQ();
+		$qmin = $this->getMinQ(true);
+		$qmax = $this->getMaxQ(false);
+		$q    = ['$and' => [$qmin, $qmax]];
+		
 		self::emp($q);
 		$res = $this->mcoll->find($q, ['sort' => ['U' => 1]]);
 		self::emp($res);
 		return $res;
 	}
 	
-	private function getMinQ() { 
+	private function getMinQ($uslev = false) { 
 		$q10 = ['U' => ['$gte' => $this->now - DAY_S * $this->minDays]];
+		if ($uslev) return $q10;
 		$q20 = ['U' => ['$lte' => $this->now]];
 		$q30 = ['$and' => [$q10, $q20]];
 		return $q30;
