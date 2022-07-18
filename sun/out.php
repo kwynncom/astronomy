@@ -16,49 +16,44 @@ function getSunStatus() {
     $forts = strtotime('2019-12-06 00:00');
     $gmto = -5 + date('I', $forts);
 
-    $alb = ['at', 'nt', 'ct', 'rise', 'noon', 'set', 'ct', 'nt', 'at'];
-    $azs = [108, 102, 96, 90.833333];
+    $alb = ['atm' => 'astronomical_twilight_begin', 'ntm' => 'nautical_twilight_begin', 'ctm' => 'civil_twilight_begin', 
+		'rise' => 'sunrise', 'noon' => 'transit', 'set' => 'sunset', 'cte' => 'civil_twilight_end', 
+		'nte' => 'nautical_twilight_end', 'ate' => 'astronomical_twilight_end'];
+    // $azs = [108, 102, 96, 90.833333];
     
     $hht  = '';
     $hht .= '<tr>';
-    foreach($alb as $l) $hht .= "<th>$l</th>";
+    foreach($alb as $l => $ignore) $hht .= "<th>$l</th>";
     $hht .= '</tr>' . "\n";
     $mht  = '<tr>';
     $cht2 = '<tr>';
     
+	$timea = date_sun_info($forts, $loc['lat'], $loc['lon']);
+	
     $tss = [];
     $cnt = 0;
-    // $curp = false;
-    for($j=0; $j < 3; $j++) 
-    for($i=0; $i < count($azs); $i++) 
+
+	foreach($alb as $mylabel => $sikey)
     {
+		$f = 'g:i';
+		if ($cnt === 3 || $cnt === 4 || $cnt === 5) $f = 'g:i:s';	
+
+		$ts =  $timea[$sikey];
+		$s = date($f, $ts);
+		
+		if ($mylabel === 'noon') $nts = $ts;
 	
-	$f = 'g:i';
-	if ($cnt === 3 || $cnt === 4 || $cnt === 5) $f = 'g:i:s';
+		// else continue; // *************
 	
-	if ($j === 0)  {
-	    $ts = date_sunrise($forts, SUNFUNCS_RET_TIMESTAMP, $loc['lat'], $loc['lon'], $azs[$i], $gmto); 
-	    $s  = date($f, $ts);
-	}
-	else if ($cnt === 4) {
-	    $si = date_sun_info($forts, $loc['lat'], $loc['lon']);
-	    $ts  = $si['transit'];
-	    $nts = $ts;
-	    $s = date($f, $ts);
-	} else if ($j === 2) {
-	    $ts = date_sunset($forts, SUNFUNCS_RET_TIMESTAMP, $loc['lat'], $loc['lon'], $azs[count($azs) - $i - 1], $gmto);
-	    $s = date($f, $ts);
-	} else continue;
-	
-	$tssms[$cnt] = $ts * 1000;
-	
-	$cht2 .= "<td id='td$cnt'></td>";
-	
-	$mht .= '<td>';
-	$mht .= $s;
-	$mht .= '</td>';
-	
-	$cnt++;
+		$tssms[$cnt] = $ts * 1000;
+
+		$cht2 .= "<td id='td$cnt'></td>";
+
+		$mht .= '<td>';
+		$mht .= $s;
+		$mht .= '</td>';
+
+		$cnt++;
     }
     
     $mht   .= '</tr>' . "\n";
