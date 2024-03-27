@@ -1,3 +1,10 @@
+# confirmed 2024/03
+sudo apt install python3-pip
+
+# as of 2024/03
+sudo apt install python3-skyfield
+
+
 sudo apt update
 sudo apt install python3-pip
 sudo -H pip install skyfield

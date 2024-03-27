@@ -5,9 +5,11 @@ require_once('data.php');
 class moon_calc implements moon_config {
 
 	const huddfs = 'D M d';
+	private array $phcha;
+	private readonly array $cala;
 	
 	public function __construct() {
-		$this->phca = [];
+		// $this->phca = [];
 		$r30 = moon_data::get();
 		$this->do40($r30);
 		return;
